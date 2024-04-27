@@ -119,71 +119,67 @@ public class Main {
     }
 
     public static String getInputDate(String message) {
-        System.out.print(message + "(yyyy-MM-dd): ");
-        String input = myScanner.nextLine().trim();
-
-        while (!isValidDateFormat(input)) {
-            System.out.println("Format tanggal tidak valid. Silakan masukkan kembali.");
-            getInputDate(message);
-        }
-
-        return input;
-    }
-
-    public static boolean isValidDateFormat(String input) {
         try {
+            System.out.print(message + "(yyyy-MM-dd): ");
+            String input = myScanner.nextLine().trim();
+
             LocalDate.parse(input);
-            return true;
+
+            return String.valueOf(input);
         } catch (DateTimeParseException e) {
-            return false;
+            return getInputDate(message);
         }
     }
 
-    public static String getInput(String message, boolean notelp, boolean yesno, boolean NIM) {
+    public static String getInput(String message, boolean notelp, boolean yesno, boolean NIM, boolean keluar) {
         try {
             System.out.print(message);
             String input = myScanner.nextLine().trim();
 
-            if (notelp != true && NIM != true) {
+            if (notelp != true && NIM != true && keluar != true) {
                 if (input.matches("\\d+")) {
                     throw new IllegalArgumentException("Input tidak boleh hanya berisi angka.");
                 }
-            } else {
+            } else if (notelp == true || NIM == true) {
                 if (!Pattern.matches("[\\p{Alnum}]+", input)) {
                     System.out.println("Input mengandung simbol. Harap masukkan bilangan bulat.");
-                    return getInput(message, notelp, yesno, NIM);
+                    return getInput(message, notelp, yesno, NIM, keluar);
                 }
 
                 if (Pattern.matches(".*[a-zA-Z].*", input)) {
                     System.out.println("Input mengandung huruf alfabet. Harap masukkan bilangan bulat.");
-                    return getInput(message, notelp, yesno, NIM);
+                    return getInput(message, notelp, yesno, NIM, keluar);
                 }
 
                 if (input.length() > 13) {
                     System.out.println("No. Telp maksimal hanya 13 angka.");
-                    return getInput(message, notelp, yesno, NIM);
+                    return getInput(message, notelp, yesno, NIM, keluar);
+                }
+            } else if (keluar == true) {
+                if (input.matches("\\d+") && input != "0") {
+                    throw new IllegalArgumentException("Input tidak valid.");
                 }
             }
 
             if (input.isEmpty()) {
                 System.out.println("Input tidak boleh kosong. Silakan coba lagi.");
-                return getInput(message, notelp, yesno, NIM);
+                return getInput(message, notelp, yesno, NIM, keluar);
             }
 
             if (yesno == true) {
                 if (!input.equalsIgnoreCase("y") && !input.equalsIgnoreCase("n")) {
                     System.out.println("Tolong isi hanya Y / N.");
-                    return getInput(message, notelp, yesno, NIM);
+                    return getInput(message, notelp, yesno, NIM, keluar);
                 }
             }
 
             return input;
         } catch (IllegalArgumentException ex) {
             System.out.println("Terjadi kesalahan: " + ex.getMessage());
-            return getInput(message, notelp, yesno, NIM);
+            return getInput(message, notelp, yesno, NIM, keluar);
         } catch (Exception ex) {
             System.out.println("Terjadi kesalahan: " + ex.getMessage());
-            return getInput(message, notelp, yesno, NIM);
+            return getInput(message, notelp, yesno, NIM, keluar);
         }
     }
 
@@ -956,13 +952,14 @@ public class Main {
             if (view == true) {
                 boolean isRunning = true;
                 while (isRunning) {
-                    String input = getInput("Apakah ingin melihat data detail peminjaman (Y/N) ?", false, true, false);
+                    String input = getInput("Apakah ingin melihat data detail peminjaman (Y/N) ?", false, true, false,
+                            false);
 
                     if (input.equalsIgnoreCase("Y")) {
                         System.out.println("");
                         String noPinjam = getInput(
                                 "Masukkan nomor peminjaman yang ingin dilihat detailnya (0 untuk keluar):",
-                                false, false, false);
+                                false, false, false, true);
 
                         if (noPinjam.equals("0")) {
                             break;
@@ -1144,14 +1141,13 @@ public class Main {
                     mahasiswa = pengembalian.getNIM().getNama();
                 }
                 String[] data = { String.valueOf(pengembalian.getNoKembali()),
-                        String.valueOf(pengembalian.getNoPinjam()),
+                        pengembalian.getNoPinjam().getNoPinjam(),
                         String.valueOf(pengembalian.getIDPustakawan().getNama()),
                         String.valueOf(pengembalian.getTglKembali()), mahasiswa,
                         dosen,
                         String.valueOf(pengembalian.getTotalDendaRusak()), String.valueOf(pengembalian.getTotalTelat()),
                         String.valueOf(pengembalian.getTotalBayar()) };
 
-                // Memperbarui panjang maksimum untuk setiap kolom
                 for (int i = 0; i < data.length; i++) {
                     columnLengths[i] = Math.max(columnLengths[i], data[i].length());
                     if (columnLengths[i] < header[i].length()) {
@@ -1197,7 +1193,7 @@ public class Main {
                     mahasiswa = pengembalian.getNIM().getNama();
                 }
                 String[] data = { String.valueOf(pengembalian.getNoKembali()),
-                        String.valueOf(pengembalian.getNoPinjam()),
+                        pengembalian.getNoPinjam().getNoPinjam(),
                         String.valueOf(pengembalian.getIDPustakawan().getNama()),
                         String.valueOf(pengembalian.getTglKembali()), mahasiswa,
                         dosen,
@@ -1215,13 +1211,14 @@ public class Main {
             printWriter.close();
             boolean isRunning = true;
             while (isRunning) {
-                String input = getInput("Apakah ingin melihat data detail pengembalian (Y/N) ?", false, true, false);
+                String input = getInput("Apakah ingin melihat data detail pengembalian (Y/N) ?", false, true, false,
+                        false);
 
                 if (input.equalsIgnoreCase("Y")) {
                     System.out.println("");
                     String noKembali = getInput(
                             "Masukkan nomor pengembalian yang ingin dilihat detailnya (0 untuk keluar):",
-                            false, false, false);
+                            false, false, false, false);
 
                     if (noKembali.equals("0")) {
                         break;
@@ -1238,6 +1235,7 @@ public class Main {
                     if (noKembaliPilih != null) {
                         displayDetailPembayaran(noKembaliPilih);
                         displayDetailPengembalian(noKembaliPilih);
+
                     } else {
                         System.out.println("Nomor pengembalian tidak ditemukan.");
                     }
@@ -1555,7 +1553,7 @@ public class Main {
         while (isRunning) {
             displayPeminjaman(false);
             String input = getInput("Masukkan nomor peminjaman yang ingin diapprove ATAU Masukkan 0 untuk kembali: ",
-                    false, false, false);
+                    false, false, false, true);
             if (input.equals("0")) {
                 isRunning = false;
             } else {
@@ -1589,14 +1587,14 @@ public class Main {
             switch (menu) {
                 case 1:
                     displayBuku();
-                    mau = getInput("Apakah anda ingin meminjam buku? (Y/N) ", false, true, false);
+                    mau = getInput("Apakah anda ingin meminjam buku? (Y/N) ", false, true, false, false);
                     if (mau.equalsIgnoreCase("y"))
                         menutambahpeminjaman(true);
                     else
                         break;
                 case 2:
                     displayCD();
-                    mau = getInput("Apakah anda ingin meminjam CD? (Y/N) ", false, true, false);
+                    mau = getInput("Apakah anda ingin meminjam CD? (Y/N) ", false, true, false, false);
                     if (mau.equalsIgnoreCase("y"))
                         menutambahpeminjaman(true);
                     else
@@ -1702,7 +1700,7 @@ public class Main {
                 System.out.println("Pilihan tidak valid.");
             }
 
-            ulang = getInput("Tambah Buku / CD lagi? (Y/N)", false, true, false);
+            ulang = getInput("Tambah Buku / CD lagi? (Y/N)", false, true, false, false);
             if (ulang.equalsIgnoreCase("n"))
                 break;
         }
@@ -1714,7 +1712,7 @@ public class Main {
             String noTrans = autoNoTransaksi("KMBL");
 
             displayPeminjaman(false);
-            String nomorPeminjaman = getInput("Masukkan nomor peminjaman: ", false, false, false);
+            String nomorPeminjaman = getInput("Masukkan nomor peminjaman: ", false, false, false, false);
             Pengembalian pengembalian = new Pengembalian();
             Peminjaman peminjaman = null;
             for (Peminjaman nopeminjaman : dafPeminjaman) {
@@ -1730,54 +1728,66 @@ public class Main {
                 System.out.println("Tanggal kembali: " + LocalDate.now());
                 int biayarusak = 0;
                 int selisihHari = hitungSelisihHari(LocalDate.parse(peminjaman.getDueDate()), LocalDate.now());
-
+                if (mahasiswa != null) {
+                    pengembalian.inputData(noTrans, peminjaman, mahasiswa, pustaktif, selisihHari, dafDetPembayaran,
+                            null);
+                } else {
+                    pengembalian.inputData(noTrans, peminjaman, dosen, pustaktif, selisihHari, dafDetPembayaran, null);
+                }
                 System.out.println("Input detail pengembalian: ");
                 for (DetailPeminjaman detpeminjaman : dafDetPeminjaman) {
-                    DetailPengembalian detkembali = new DetailPengembalian();
-
                     if (detpeminjaman.getNoPinjam().equals(peminjaman)) {
                         if (detpeminjaman.getIDBuku() != null) {
+                            DetailPengembalian detkembali = new DetailPengembalian();
                             detkembali.inputData(pengembalian, detpeminjaman.getIDBuku());
                             biayarusak = detpeminjaman.getIDBuku().getHargaDenda();
+                            dafDetPengembalian.add(detkembali);
+                            // displayDetailPengembalian(pengembalian);
                         } else if (detpeminjaman.getIDCD() != null) {
+                            DetailPengembalian detkembali = new DetailPengembalian();
                             detkembali.inputData(pengembalian, detpeminjaman.getIDCD());
                             biayarusak = detpeminjaman.getIDCD().getHargaDenda();
+                            dafDetPengembalian.add(detkembali);
+                            // displayDetailPengembalian(pengembalian);
                         }
                     }
-
-                    dafDetPengembalian.add(detkembali);
                 }
                 Object bukucd = null;
                 for (DetailPengembalian detkembali : dafDetPengembalian) {
-                    // DetailPembayaran detailPembayaran = new DetailPembayaran();
-                    if (detkembali.getIDBuku() != null)
-                        bukucd = detkembali.getIDBuku();
-                    else if (detkembali.getIDCD() != null)
-                        bukucd = detkembali.getIDCD();
+                    if (detkembali.getNoPengembalian().equals(pengembalian)) {
+                        // DetailPembayaran detailPembayaran = new DetailPembayaran();
+                        if (detkembali.getIDBuku() != null)
+                            bukucd = detkembali.getIDBuku();
+                        else if (detkembali.getIDCD() != null)
+                            bukucd = detkembali.getIDCD();
 
-                    if (detkembali.getStatusKembali().equals(StatusKembali.Rusak)) {
-                        DetailPembayaran detailPembayaran = new DetailPembayaran();
-                        detailPembayaran.inputData(pengembalian, biayarusak, JenisDenda.Rusak, bukucd);
-                        dafDetPembayaran.add(detailPembayaran);
-                    } else if (detkembali.getStatusKembali().equals(StatusKembali.Hilang)) {
-                        DetailPembayaran detailPembayaran = new DetailPembayaran();
-                        detailPembayaran.inputData(pengembalian, biayarusak, JenisDenda.Hilang, bukucd);
-                        dafDetPembayaran.add(detailPembayaran);
-                    } else if (selisihHari > 14) {
-                        DetailPembayaran detailPembayaran = new DetailPembayaran();
-                        int denda = selisihHari * 1000;
-                        detailPembayaran.inputData(pengembalian, denda, JenisDenda.Telat, bukucd);
-                        dafDetPembayaran.add(detailPembayaran);
+                        if (detkembali.getStatusKembali().equals(StatusKembali.Rusak)) {
+                            DetailPembayaran detailPembayaran = new DetailPembayaran();
+                            detailPembayaran.inputData(pengembalian, biayarusak, JenisDenda.Rusak, bukucd);
+                            dafDetPembayaran.add(detailPembayaran);
+                        } else if (detkembali.getStatusKembali().equals(StatusKembali.Hilang)) {
+                            DetailPembayaran detailPembayaran = new DetailPembayaran();
+                            detailPembayaran.inputData(pengembalian, biayarusak, JenisDenda.Hilang, bukucd);
+                            dafDetPembayaran.add(detailPembayaran);
+                        } else if (selisihHari > 14) {
+                            DetailPembayaran detailPembayaran = new DetailPembayaran();
+                            int denda = selisihHari * 1000;
+                            detailPembayaran.inputData(pengembalian, denda, JenisDenda.Telat, bukucd);
+                            dafDetPembayaran.add(detailPembayaran);
+                        }
                     }
                 }
 
+                dafPengembalian.add(pengembalian);
+
                 if (mahasiswa != null) {
-                    pengembalian.inputData(noTrans, peminjaman, mahasiswa, pustaktif, selisihHari, dafDetPembayaran);
+                    pengembalian.inputData(noTrans, peminjaman, mahasiswa, pustaktif, selisihHari, dafDetPembayaran,
+                            pengembalian);
                 } else {
-                    pengembalian.inputData(noTrans, peminjaman, dosen, pustaktif, selisihHari, dafDetPembayaran);
+                    pengembalian.inputData(noTrans, peminjaman, dosen, pustaktif, selisihHari, dafDetPembayaran,
+                            pengembalian);
                 }
 
-                dafPengembalian.add(pengembalian);
             } else {
                 System.out.println("Nomor peminjaman tidak ditemukan.");
             }

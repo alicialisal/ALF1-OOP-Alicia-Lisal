@@ -30,7 +30,7 @@ public class Pengembalian {
 
     public void inputData(String noKembali, Peminjaman noPinjam, Dosen_Staff dosen, Pustakawan pustakawan,
             int selisihhari,
-            ArrayList<DetailPembayaran> listdetpembayaran) {
+            ArrayList<DetailPembayaran> listdetpembayaran, Pengembalian objnoKembali) {
         this.noKembali = noKembali;
         this.noPinjam = noPinjam;
         NIK = dosen;
@@ -44,23 +44,26 @@ public class Pengembalian {
         }
 
         for (DetailPembayaran detail : listdetpembayaran) {
-            if (detail.getJenisDenda() == JenisDenda.Hilang || detail.getJenisDenda() == JenisDenda.Rusak) {
-                totalDendaRusak += detail.getJumlah_denda();
-            } else
-                totalTelat += detail.getJumlah_denda();
+            if (detail.getNoPengembalian().equals(objnoKembali)) {
+                if (detail.getJenisDenda() == JenisDenda.Hilang || detail.getJenisDenda() == JenisDenda.Rusak) {
+                    totalDendaRusak += detail.getJumlah_denda();
+                } else
+                    totalTelat += detail.getJumlah_denda();
+            }
         }
-
         int totaldenda = totalTelat + totalDendaRusak;
+        if (totaldenda > 0) {
 
-        System.out.println("Total denda anda adalah: " + totaldenda);
+            System.out.println("Total denda anda adalah: " + totaldenda);
 
-        this.totalBayar = Main.getInputInt("Masukkan jumlah pembayaran: ");
-        int kembalian = hitungKembalian();
-        System.out.println("Kembalian: " + kembalian);
+            this.totalBayar = Main.getInputInt("Masukkan jumlah pembayaran: ");
+            int kembalian = hitungKembalian();
+            System.out.println("Kembalian: " + kembalian);
+        }
     }
 
     public void inputData(String noKembali, Peminjaman noPinjam, Mahasiswa mhs, Pustakawan pustakawan, int selisihhari,
-            ArrayList<DetailPembayaran> listdetpembayaran) {
+            ArrayList<DetailPembayaran> listdetpembayaran, Pengembalian objnoKembali) {
         this.noKembali = noKembali;
         this.noPinjam = noPinjam;
         NIM = mhs;
@@ -75,18 +78,23 @@ public class Pengembalian {
         }
 
         for (DetailPembayaran detail : listdetpembayaran) {
-            if (detail.getJenisDenda() == JenisDenda.Hilang || detail.getJenisDenda() == JenisDenda.Rusak) {
-                totalDendaRusak += detail.getJumlah_denda();
-            } else
-                totalTelat += detail.getJumlah_denda();
+            if (detail.getNoPengembalian().equals(objnoKembali)) {
+                if (detail.getJenisDenda() == JenisDenda.Hilang || detail.getJenisDenda() == JenisDenda.Rusak) {
+                    totalDendaRusak += detail.getJumlah_denda();
+                } else
+                    totalTelat += detail.getJumlah_denda();
+            }
         }
 
-        int totaldenda = totalDendaRusak + totalTelat;
-        System.out.println("Total denda adalah: " + totaldenda);
+        int totaldenda = totalTelat + totalDendaRusak;
+        if (totaldenda > 0) {
 
-        this.totalBayar = Main.getInputInt("Masukkan jumlah pembayaran: ");
-        int kembalian = hitungKembalian();
-        System.out.println("Kembalian anda: " + kembalian);
+            System.out.println("Total denda anda adalah: " + totaldenda);
+
+            this.totalBayar = Main.getInputInt("Masukkan jumlah pembayaran: ");
+            int kembalian = hitungKembalian();
+            System.out.println("Kembalian: " + kembalian);
+        }
     }
 
     private int hitungKembalian() {

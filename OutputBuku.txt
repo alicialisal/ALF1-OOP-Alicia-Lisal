@@ -4,6 +4,6 @@
 | ID      | Judul Buku   | Pengarang | Penerbit          | Tahun Terbit | Edisi Terbit | Jenis Sampul | Jumlah Tersedia | Jumlah Terpinjam | Jumlah Rusak | Jumlah Total | Genre | Biaya Denda |
 ================================================================================================================================================================================================
 | BUKU001 | Narnia       | Alicia    | Penerbit Gramedia | 2017-01-02   | ke-10        | Hardcover    | 4               | 2                | 0            | 6            | SciFi | 200000      |
-| BUKU002 | Harry Potter | Tom       | Penerbit Gramedia | 2000-12-01   | ke-3         | Softcover    | 2               | 2                | 1            | 4            | SciFi | 250000      |
-| BUKU003 | Bulan        | Tere Liye | Penerbit Gramedia | 2020-08-04   | ke-5         | Softcover    | 1               | 0                | 0            | 1            | SciFi | 100000      |
+| BUKU002 | Harry Potter | Tom       | Penerbit Gramedia | 2000-12-01   | ke-3         | Hardcover    | 3               | 1                | 0            | 4            | SciFi | 200000      |
+| BUKU003 | Bulan        | Tere Liye | Penerbit Gramedia | 2020-08-04   | ke-5         | Softcover    | 1               | 0                | 0            | 1            | SciFi | 20000       |
 ================================================================================================================================================================================================

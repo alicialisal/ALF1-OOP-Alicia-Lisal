@@ -28,15 +28,16 @@ public class CD {
 
     public void inputData(String kodecd) {
         IDCD = kodecd;
-        judul = Main.getInput("Masukkan Judul CD: ", false, false, false);
+        judul = Main.getInput("Masukkan Judul CD: ", false, false, false, false);
         Genre = getGenre1();
         tahun_publikasi = Main.getInputDate("Masukkan Tahun Publikasi ");
-        rak = Main.getInput("Masukkan Rak: ", false, false, false);
+        rak = Main.getInput("Masukkan Rak: ", false, false, false, false);
         jumlahTersedia = Main.getInputInt("Masukkan Jumlah Tersedia: ");
         jumlahTerpinjam = Main.getInputInt("Masukkan Jumlah Terpinjam: ");
         jumlahRusak = Main.getInputInt("Masukkan Jumlah Rusak: ");
         jumlahTotal = jumlahTerpinjam + jumlahTersedia;
         System.out.println("Jumlah total: " + jumlahTotal);
+        hargaDenda = Main.getInputInt("Harga beli CD: ");
     }
 
     GenreChoice getGenre1() {

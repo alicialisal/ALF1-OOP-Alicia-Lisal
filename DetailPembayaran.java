@@ -24,9 +24,9 @@ public class DetailPembayaran {
         jumlah = 1;
         this.jenisDenda = jenisDenda;
         if (IDBukuCD instanceof Buku)
-            this.IDBuku = IDBuku;
+            this.IDBuku = (Buku) IDBukuCD;
         else if (IDBukuCD instanceof CD)
-            this.IDCD = IDCD;
+            this.IDCD = (CD) IDBukuCD;
         jumlah_denda = biayadenda;
     }
 
